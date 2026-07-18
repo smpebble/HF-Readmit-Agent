@@ -6,6 +6,17 @@ HF Readmit Agent is a working reader-study prototype. It lets a reviewer inspect
 
 **This is not a medical device or clinical decision-support system.** Do not use it for diagnosis, treatment, patient monitoring, or real patient data. Every record in this repository is synthetic.
 
+## Access and test mode
+
+- **Repository:** https://github.com/smpebble/HF-Readmit-Agent
+- **Access:** Public repository; no invitation is required for evaluators.
+- **Test accounts:** None. The complete synthetic cohort is bundled, and the built-in reviewer labels R1 and R2 require no sign-in or password.
+- **Runtime dependencies:** No plugins, browser extensions, or third-party development tools are required for the core workflow. Docker Desktop with Compose v2 is sufficient.
+- **Tested platform:** Windows with Docker Desktop and PowerShell. The standard Compose configuration may also run on other Docker Compose v2 platforms, but those environments have not been formally verified for this prototype.
+- **Fast repeat start:** After the first build, use `docker compose up -d` to start the existing local images without rebuilding. The baseline review experience, analytics, and deterministic Safety Lab run without an LLM key or external service.
+
+The optional LLM research-assistant and model benchmark require the evaluator’s own compatible API credentials. They are intentionally disabled by default; all core product paths remain available without them.
+
 ## Quick start
 
 ### What you can verify in five minutes
@@ -302,6 +313,36 @@ Expected baseline:
 | LLM button is disabled | Verify .env has both LLM_API_KEY and LLM_MODEL, rebuild, then request /api/llm/status. |
 | Safety Lab benchmark fails | Confirm the LLM endpoint and credentials, check API logs, then rerun the benchmark. |
 | You need a clean study state | Run docker compose down -v; this deletes local Docker volumes and all saved review decisions. |
+
+## Built collaboratively with Codex
+
+HF Readmit Agent was developed through an iterative collaboration between the project lead and Codex. The project lead set the clinical-research boundary, reviewed each result, selected the product direction, and made the final acceptance decisions. Codex accelerated implementation, verification, and documentation work within those decisions.
+
+### Where Codex accelerated the workflow
+
+- Turned the reader-study requirements into a runnable Go, React, PostgreSQL, and Docker prototype.
+- Implemented and tested the deterministic L0–L3 evidence-producing triage engine, reviewer-specific queues, server-side timing, analytics, exports, and the Safety Lab evaluation view.
+- Iterated on the review workspace, responsive information hierarchy, bilingual settings, theme controls, SVG icon treatment, and local logo handling from product-feedback rounds.
+- Added an optional OpenAI-compatible second-reader integration with structured output, server-verified citations, and a cohort-level benchmark rather than relying on ungrounded free-form output.
+- Ran backend tests, frontend production builds, Docker checks, documentation review, and a public-release privacy audit before publishing the repository.
+
+### Product, engineering, and design decisions made by the project lead
+
+- Keep the prototype strictly synthetic-data and research-only; never position it as diagnosis, treatment, or autonomous clinical decision support.
+- Put transparent deterministic rules and clinician review before model output, so a reviewer can inspect the underlying evidence and disagree.
+- Make reviewer decisions, timing, disagreement notes, and exports first-class research artifacts.
+- Keep API keys on the server, store no LLM summaries in the study database, and make the model path optional.
+- Optimise the interface for a clinician’s fast review of patient snapshot, trend, daily trail, triggering evidence, and final decision on one screen.
+
+### GPT-5.6 and Codex in the final prototype
+
+Codex was the implementation and quality partner: it helped translate the product decisions above into code, tests, Docker setup, and reviewer-facing documentation. GPT-5.6 is the intended optional second-reader model, configured through LLM_MODEL. Its integration requests structured JSON, limits citations to real synthetic-case fields and days, verifies citation values on the server, and exposes model coverage and critical-miss metrics in Safety Lab.
+
+A live GPT-5.6 run requires a user-supplied API key and is not enabled in the default local demo. This keeps the repository immediately testable without credentials while preserving a clearly bounded path for evaluating GPT-5.6 on the synthetic cohort.
+
+### Codex feedback record
+
+The required Codex feedback session ID is supplied with the Devpost project submission rather than committed to the public repository, because sharing it can expose the underlying development conversation. To create it, open this primary Codex project task, enter `/feedback`, choose to share the existing session, submit the feedback form, and copy the session ID shown after submission.
 
 ## Project intent
 
