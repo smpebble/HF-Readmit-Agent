@@ -1,0 +1,21 @@
+# Dependencies and generated build output
+node_modules/
+dist/
+**/.cache/
+*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+coverage.out
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Private working material and machine-specific files
+.codex/
+design-system/
+Docs/
+Temps/
+Microsoft/
+HACKATHON_DEMO.md

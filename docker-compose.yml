@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: hf_readmit
+      POSTGRES_USER: hf_readmit
+      POSTGRES_PASSWORD: hf_readmit_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backend/db/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hf_readmit -d hf_readmit"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      PORT: "8080"
+      DATASET_PATH: /app/data/synthetic_hf_cases.json
+      DATABASE_URL: postgres://hf_readmit:hf_readmit_dev@postgres:5432/hf_readmit?sslmode=disable
+      # Optional: keep LLM credentials in your local environment or .env file, never in source control.
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+  web:
+    image: node:24-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - web-node-modules:/app/node_modules
+    depends_on:
+      api:
+        condition: service_started
+volumes:
+  postgres-data:
+  web-node-modules:
