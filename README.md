@@ -6,7 +6,7 @@ HF Readmit Agent is a working reader-study prototype. It lets a reviewer inspect
 
 **This is not a medical device or clinical decision-support system.** Do not use it for diagnosis, treatment, patient monitoring, or real patient data. Every record in this repository is synthetic.
 
-## For hackathon judges — start here
+## Quick start
 
 ### What you can verify in five minutes
 
@@ -136,7 +136,7 @@ The demo sequence above is self-contained so a reviewer can run it directly from
 
 ~~~mermaid
 flowchart LR
-    Judge["Reviewer / judge browser"] --> Web["React + Vite<br/>Review Workspace"]
+    Reviewer["Reviewer browser"] --> Web["React + Vite<br/>Review Workspace"]
     Web -->|REST + reviewer header| API["Go API<br/>study workflow"]
     API --> Rules["Deterministic L0–L3 rules<br/>evidence-producing"]
     API --> DB[("PostgreSQL<br/>review decisions")]
@@ -281,29 +281,6 @@ Expected baseline:
 - Safety Lab reports 18 dataset cases;
 - deterministic rules have evaluated all 18 cases;
 - model benchmark is idle until an LLM is configured and the benchmark is started.
-
-## Repository map
-
-~~~text
-backend/
-  cmd/api/                 HTTP API and composition root
-  internal/agent/          Deterministic L0–L3 engine
-  internal/analytics/      Agreement, kappa, safety metrics, exports
-  internal/assignments/    Stable reviewer-specific queues
-  internal/llm/            Strict-schema, evidence-verified second reader
-  internal/reviews/        Timing and PostgreSQL decision repository
-  internal/safety/         Cohort Safety Lab aggregation
-  db/migrations/           PostgreSQL schema
-frontend/
-  src/main.tsx             Bilingual review, settings, and lab interface
-  src/styles.css           Responsive visual system
-data/
-  synthetic_hf_cases.json  18-case synthetic study dataset
-Docs/
-  READER_STUDY_PROTOCOL.md Proposed study execution procedure
-HACKATHON_DEMO.md          Three-minute demo guide
-docker-compose.yml         One-command local environment
-~~~
 
 ## Important boundaries and limitations
 
